@@ -42,7 +42,7 @@ TIM_HandleTypeDef htim4;
 
 #define BUFFER_SIZE          256
 
-#define PASSWORD             "AB"
+#define PASSWORD             "AB1"
 
 #define GPS_CODE             "G"
 #define ALARM_ON             'A'
