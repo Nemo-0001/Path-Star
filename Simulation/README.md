@@ -1,1 +1,1 @@
-![Simulation](Path_Star.JPG)
+![Path_Star](Path_Star.JPG)
