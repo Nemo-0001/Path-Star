@@ -4,6 +4,12 @@
 
 Path Star is an innovative smart stick designed to assist the visually impaired. It integrates multiple features such as obstacle detection, GPS, Braille input to enhance the mobility and independence of its users, and Receiving messages to do actions based on them.
 
+## Simulation
+
+You can see here the simulation and if you pressed the img you can find the video of the simulation on my channel on YouTube.
+
+[![Watch the simulation](Simulation/Path_Star.JPG)](https://youtu.be)
+
 ## Features
 
 1. *Obstacle Detection*: Utilizes an ultrasonic sensor in input capture mode using timer 4 to detect obstacles and provides feedback via a motor and buzzer.
@@ -134,10 +140,4 @@ Turns off the buzzer.
 Feel free to contribute to the Path Star project by submitting pull requests or reporting issues on the project repository.
 It will be a good manner if you want to contribute with an AI model for making this project more advanced and so make the life of the Visually Impaired easier.
 
-
-## Simulation
-
-You can see here the simulation and if you pressed the img you can find the video of the simulation on my channel on YouTube.
-
-[![Watch the simulation](Simulation/Path_Star.JPG)](https://youtu.be)
 
