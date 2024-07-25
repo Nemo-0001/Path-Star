@@ -27,35 +27,98 @@ Path Star is an innovative smart stick designed to assist the visually impaired.
 
 ### Main Functions
 
-- *Sys_Init(void)*: Initializes the ultrasonic sensor, motor, and buzzer.
-- *PIR_Response(void)*: Handles the response of the PIR sensor.
-- *Ultraonic_Response(float distance1)*: Manages the response based on the ultrasonic sensor's readings.
-- *Read_Buttons(void)*: Reads the state of the Braille keypad buttons.
-- *Translate_Braille(uint8_t braillePattern, bool *isNumber)*: Translates the Braille pattern to a corresponding character.
-- *Store_Character(void)*: Stores the translated Braille character.
-- *Send_Sentence(void)*: Sends the composed sentence via UART.
-- *Send_Braille(void)*: Handles the Braille input process.
-- *Check_Password(void)*: Verifies the password input.
-- *Send_GPS_Data(void)*: Sends GPS data over UART.
-- *UART_Receiving_IT_Init(void)*: Initializes UART receiving in interrupt mode.
-- *UART_SendString(UART_HandleTypeDef *huart, char *string)*: Sends a string over UART.
-- *HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)*: Callback function for UART receive complete interrupt.
+```c
+Sys_Init(void);
+```
+Initializes the ultrasonic sensor, motor, and buzzer.
+```c
+PIR_Response(void);
+```
+Handles the response of the PIR sensor.
+```c
+Ultraonic_Response(float distance1);
+```
+Manages the response based on the ultrasonic sensor's readings.
+```c
+Read_Buttons(void);
+```
+Reads the state of the Braille keypad buttons.
+```c
+Translate_Braille(uint8_t braillePattern, bool *isNumber);
+```
+Translates the Braille pattern to a corresponding character.
+```c
+Store_Character(void);
+```
+Stores the translated Braille character.
+```c
+Send_Sentence(void);
+```
+Sends the composed sentence via UART.
+```c
+Send_Braille(void);
+```
+Handles the Braille input process.
+```c
+Check_Password(void);
+```
+Verifies the password input.
+```c
+Send_GPS_Data(void);
+```
+Sends GPS data over UART.
+```c
+UART_Receiving_IT_Init(void);
+```
+Initializes UART receiving in interrupt mode.
+```c
+UART_SendString(UART_HandleTypeDef *huart, char *string);
+```
+Sends a string over UART.
+```c
+HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
+```
+Callback function for UART receive complete interrupt.
 
 ### Peripheral Initialization
 
-- *MX_GPIO_Init()*: Initializes GPIO pins.
-- *MX_USART1_UART_Init()*: Initializes UART1.
-- *MX_USART2_UART_Init()*: Initializes UART2.
+```c
+MX_GPIO_Init();
+```
+Initializes GPIO pins.
+```c
+MX_USART1_UART_Init();
+```
+Initializes UART1.
+```c
+MX_USART2_UART_Init();
+```
+Initializes UART2.
+
 - The initialization of the timers is inside the initialization functions of the ultrasnoic & the motor.
 
 ### Sensor and Motor Control
 
-- *HCSR04_Read(uint8_t sensor)*: Reads the distance from the ultrasonic sensor.
-- *DC_MOTOR_Start(uint8_t motor, uint8_t direction, uint16_t speed)*: Starts the DC motor.
-- *DC_MOTOR_Stop(uint8_t motor)*: Stops the DC motor.
-- *Buzzer_ON()*: Turns on the buzzer.
-- *Buzzer_OFF()*: Turns off the buzzer.
-- 
+```c
+HCSR04_Read(uint8_t sensor);
+```
+Reads the distance from the ultrasonic sensor.
+```c
+DC_MOTOR_Start(uint8_t motor, uint8_t direction, uint16_t speed);
+```
+Starts the DC motor.
+```c
+DC_MOTOR_Stop(uint8_t motor);
+```
+Stops the DC motor.
+```c
+Buzzer_ON();
+```
+Turns on the buzzer.
+```c
+Buzzer_OFF();
+```
+Turns off the buzzer.
 
 ## Usage Instructions
 
