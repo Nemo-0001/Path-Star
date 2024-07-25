@@ -135,5 +135,9 @@ Feel free to contribute to the Path Star project by submitting pull requests or 
 It will be a good manner if you want to contribute with an AI model for making this project more advanced and so make the life of the Visually Impaired easier.
 
 
-## Contact
+## Simulation
+
+You can see here the simulation and if you pressed the img you can find the video of the simulation on my channel on YouTube.
+
+[![Watch the simulation](Simulation/Path_Star.JPG)](https://youtu.be)
 
