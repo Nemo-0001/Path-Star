@@ -8,7 +8,7 @@ Path Star is an innovative smart stick designed to assist the visually impaired.
 
 You can see here the simulation and if you pressed the img you can find the video of the simulation on my channel on YouTube.
 
-[![Watch the simulation](Simulation/Path_Star.JPG)](https://youtu.be)
+[![Watch the simulation](Simulation/Path_Star.JPG)]([https://youtu.be](https://youtu.be/Z__zBcwLeiI?si=PExsmyjioM7s2-gV))
 
 ## Features
 
