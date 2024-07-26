@@ -1,4 +1,4 @@
-# Path Star: Smart Stick for the Visually Impaired
+# Path Star: Smart cane for the Visually Impaired
 
 ## Project Overview
 
