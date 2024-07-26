@@ -46,7 +46,6 @@ TIM_HandleTypeDef htim4;
 
 #define GPS_CODE             "G"
 #define ALARM_ON             'A'
-#define ALARM_OFF            'S'
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -58,31 +57,30 @@ TIM_HandleTypeDef htim4;
 
 /* USER CODE BEGIN PV */
 
-uint16_t TRIG_Ticks = 0;
+uint16_t TRIG_Ticks = 0;   /* Variable to store the number of timer ticks for triggering */
 
-uint8_t RX_Data = 0;
+uint8_t RX_Data = 0;      /* Variable to store received UART data */
 
-char GGA[100];
-char RMC[100];
+char GGA[100];           /* For storing the GGA data received from the GPS module */
+char RMC[100];           /* For storing the RMC data received from the GPS module */
 
-GPSSTRUCT gpsData;
+GPSSTRUCT gpsData;       /* Structure to store GPS data */
+char GPS_Buffer[50];     /* Buffer for sending the data over UART */
 
-int flagGGA = 0, flagRMC = 0;
-char lcdBuffer [50];
+int flagGGA = 0, flagRMC = 0;  /* Flags to indicate the status of GGA and RMC data */
 
-int VCCTimeout = 5000; // GGA or RMC will not be received if the VCC is not sufficient
+int VCCTimeout = 5000;         /* GGA or RMC will not be received if the VCC is not sufficient */
 
-char sentenceBuffer[BUFFER_SIZE];
+char sentenceBuffer[BUFFER_SIZE];   /* Buffer to store sentences entered via the Braille interface */
 uint8_t sentenceIndex = 0;
-bool Is_Num = false;
-uint8_t braillePattern = 0;
+bool Is_Num = false;                /* Flag to indicate if the current input is a number */
+uint8_t braillePattern = 0;         /* Variable to store the current Braille pattern */
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 static void Sys_Init(void);
-void Display_Handler(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -122,19 +120,19 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
-  Check_Password();  //Stuck here until entering correct password
+  Check_Password();  /* Stuck here until entering correct password */
 
   UART_SendString(&huart1, "UART is ready for sending & receiving...\r\n");
-  HAL_Delay(50);
+  DELAY_MS(50);
 
-  Ringbuf_init();
-  HAL_Delay (100);
+  Ringbuf_init();   /* Initialize the ring buffer for UART for handling the GPS data */
+  DELAY_MS(50);
 
   /*Local variables begin*/
-  float Distance1 = 0.0;
+  float Distance1 = 0.0;      /* Variable to store the distance measured by the ultrasonic sensor */
   /*Local variables end*/
 
-  UART_Receiving_IT_Init();
+  UART_Receiving_IT_Init();   /* Initialize UART receiving with interrupt */
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -196,6 +194,7 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+/* Function to initialize system peripherals */
 static void Sys_Init(void)
 {
 	HCSR04_Init(HCSR04_SENSOR1, &htim4);
@@ -204,16 +203,19 @@ static void Sys_Init(void)
     Buzzer_Init();
 }
 
+/* Timer input capture callback function */
 void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
 {
 	HCSR04_TMR_IC_ISR(htim);
 }
 
+/* Timer period elapsed callback function */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef* htim)
 {
 	HCSR04_TMR_OVF_ISR(htim);
 }
 
+/* SysTick callback function */
 void SysTick_CallBack(void)
 {
 	TRIG_Ticks++;
@@ -225,7 +227,7 @@ void SysTick_CallBack(void)
     }
 }
 
-
+/* Function to handle PIR sensor response */
 void PIR_Response(void){
 	if (HAL_GPIO_ReadPin(PIR_GPIO_Port, PIR_Pin) == GPIO_PIN_SET) {
 		DC_MOTOR_Start(DC_MOTOR1, DIR_CCW, MAX_SPEED);
@@ -234,6 +236,7 @@ void PIR_Response(void){
 	}
 }
 
+/* Function to handle ultrasonic sensor response */
 void Ultraonic_Response(float distance1){
 	if(distance1 < THRESHOLD_DISTANCE){
 		DC_MOTOR_Start(DC_MOTOR1, DIR_CCW, MAX_SPEED);
@@ -244,7 +247,7 @@ void Ultraonic_Response(float distance1){
 	}
 }
 
-
+/* Function to read the Braille buttons */
 void Read_Buttons(void) {
     if (HAL_GPIO_ReadPin(But1_GPIO_Port, But1_Pin) == GPIO_PIN_SET) {
     	braillePattern |= (1 << 5);
@@ -272,6 +275,7 @@ void Read_Buttons(void) {
     }
 }
 
+/* Function to translate the entered braille pattern into characters */
 char Translate_Braille(uint8_t braillePattern, bool *isNumber) {
 	if (braillePattern == 0b001111){
 		*isNumber = true;
@@ -329,6 +333,7 @@ char Translate_Braille(uint8_t braillePattern, bool *isNumber) {
 	}
 }
 
+/* Function to store the entered char so as it can be transmitted */
 void Store_Character(void) {
 	char currentChar = Translate_Braille(braillePattern, &Is_Num);
     if ((currentChar != '\0') && (sentenceIndex < sizeof(sentenceBuffer) - 1)) {
@@ -338,6 +343,7 @@ void Store_Character(void) {
     braillePattern = 0;
 }
 
+/* Function to send the entered braille sentence over UART */
 void Send_Sentence(void) {
     // Implement sending the sentence via UART
 	if((strcmp(sentenceBuffer, GPS_CODE)) == 0){
@@ -350,6 +356,7 @@ void Send_Sentence(void) {
     sentenceBuffer[0] = '\0';  // Clear the buffer
 }
 
+/* Function to handle the reading, storing, and sending processes of the braille interface */
 void Send_Braille(void){
 	Read_Buttons();
 	// Check if store char button is pressed (PB4)
@@ -398,8 +405,16 @@ void Check_Password(void){
 
 
 void Send_GPS_Data(void){
-	uint32_t Start_Time = HAL_GetTick();
-	while((HAL_GetTick() - Start_Time) < 200){
+	uint32_t Duration_MS = 500;
+	uint32_t Start_Time = SysTick->VAL;
+	while(1){
+		uint32_t Current_Time = SysTick->VAL;
+		uint32_t Elapsed_Time = (Start_Time - Current_Time) / (SystemCoreClock / 1000);
+
+		if (Elapsed_Time >= Duration_MS){
+			break;
+		}
+
 		if (Wait_for("GGA") == 1) {
 
 			VCCTimeout = 5000; // Reset the VCC Timeout indicating the GGA is being received
@@ -421,19 +436,19 @@ void Send_GPS_Data(void){
 		}
 
 		if ((flagGGA == 2) | (flagRMC == 2)) {
-			sprintf(lcdBuffer, "%02d:%02d:%02d, %02d%02d%02d",
+			sprintf(GPS_Buffer, "%02d:%02d:%02d, %02d%02d%02d",
 					gpsData.ggastruct.tim.hour, gpsData.ggastruct.tim.min,
 					gpsData.ggastruct.tim.sec, gpsData.rmcstruct.date.Day,
 					gpsData.rmcstruct.date.Mon, gpsData.rmcstruct.date.Yr);
-			UART_SendString(&huart2, lcdBuffer);
+			UART_SendString(&huart2, GPS_Buffer);
 			UART_SendString(&huart2, "\r\n");
-			memset(lcdBuffer, '\0', 50);
-			sprintf(lcdBuffer, "%.2f%c, %.2f%c  ",
+			memset(GPS_Buffer, '\0', 50);
+			sprintf(GPS_Buffer, "%.2f%c, %.2f%c  ",
 					gpsData.ggastruct.lcation.latitude,
 					gpsData.ggastruct.lcation.NS,
 					gpsData.ggastruct.lcation.longitude,
 					gpsData.ggastruct.lcation.EW);
-			UART_SendString(&huart2, lcdBuffer);
+			UART_SendString(&huart2, GPS_Buffer);
 		}
 
 		else if ((flagGGA == 1) | (flagRMC == 1)) {
